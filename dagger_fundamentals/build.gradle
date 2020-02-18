@@ -1,3 +1,5 @@
+import proguard.gradle.ProGuardTask
+
 apply plugin: 'kotlin'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'scabbard.gradle'
@@ -25,3 +27,22 @@ idea {
     }
 }
 
+static def proguardPath(File jar) {
+    return new File(jar.parentFile, jar.name.replace(".jar", "-pro.jar"))
+}
+// gradlew :dagger_fundamentals:cleanProguard :dagger_fundamentals:proguard --console=plain --info
+// See dagger_fundamentals/build/libs/dagger_fundamentals-pro.jar
+// in Project view (expand jar, open class files and "Decompile to Java")
+def proguard = tasks.register("proguard", ProGuardTask.class) {
+    dependsOn(tasks.jar)
+    configuration project.file("proguard.pro")
+    injars project.jar.archivePath
+    outjars proguardPath(project.jar.archivePath)
+
+    libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
+    libraryjars configurations.runtimeClasspath
+}
+tasks.classes.finalizedBy(proguard)
+
+// register the proguarded lib on a configuration so that IntelliJ idea picks it up
+dependencies.add("runtimeOnly", files(proguardPath(project.jar.archivePath)))
