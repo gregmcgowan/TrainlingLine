@@ -42,7 +42,6 @@ def proguard = tasks.register("proguard", ProGuardTask.class) {
     libraryjars "${System.getProperty('java.home')}/lib/rt.jar"
     libraryjars configurations.runtimeClasspath
 }
-tasks.classes.finalizedBy(proguard)
 
 // register the proguarded lib on a configuration so that IntelliJ idea picks it up
 dependencies.add("runtimeOnly", files(proguardPath(project.jar.archivePath)))
