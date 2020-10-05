@@ -17,6 +17,7 @@ interface HomeScreenContract {
     }
 }
 
+
 class HomeScreenPresenter @Inject constructor(
     private val mainScreen: HomeScreenContract.Screen
 ) : HomeScreenContract.Presenter {
@@ -35,13 +36,13 @@ class HomeScreen @Inject constructor() : HomeScreenContract.Screen {
 
 
 @Module
-interface HomeScreenModule {
+enum class HomeScreenModule { ;
 
     @Binds
-    fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
+    abstract fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
 
     @Binds
-    fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
+    abstract fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
 
 }
 

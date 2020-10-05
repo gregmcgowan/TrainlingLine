@@ -1,4 +1,4 @@
-package com.trainlingline.part_8_subcomponents
+package com.trainlingline.part_6_qualifiers
 
 import dagger.Binds
 import dagger.Module
@@ -6,7 +6,9 @@ import okhttp3.OkHttpClient
 import javax.inject.Inject
 
 interface UserRepo {
+
     fun getUser(userId: String): User
+
 }
 
 data class User(val name: String)

@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "gradle.plugin.dev.arunkumar:scabbard-gradle-plugin:0.1.0"
+        classpath "gradle.plugin.dev.arunkumar:scabbard-gradle-plugin:0.4.0"
         classpath "net.sf.proguard:proguard-gradle:6.2.2"
     }
 }

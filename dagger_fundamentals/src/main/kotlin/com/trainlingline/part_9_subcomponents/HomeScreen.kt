@@ -1,9 +1,35 @@
-package com.trainlingline.part_7_component_dependancies
+package com.trainlingline.part_9_subcomponents
 
 import dagger.Binds
-import dagger.Component
 import dagger.Module
+import dagger.Subcomponent
 import javax.inject.Inject
+
+@ScreenScope
+@Subcomponent(modules = [HomeScreenModule::class])
+interface HomeScreenSubcomponent {
+
+    fun homeScreenPresenter(): HomeScreenContract.Presenter
+
+    @Subcomponent.Builder
+    interface Builder {
+        fun build(): HomeScreenSubcomponent
+    }
+}
+
+@Module
+interface HomeScreenModule {
+
+    @Binds
+    fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
+
+    @Binds
+    fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
+
+    @Binds
+    fun bindNavigator(impl: TrainingLineApp): Navigator
+
+}
 
 interface HomeScreenContract {
 
@@ -39,26 +65,10 @@ class HomeScreen @Inject constructor() : HomeScreenContract.Screen {
     }
 }
 
-@Module
-interface HomeScreenModule {
 
-    @Binds
-    fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
 
-    @Binds
-    fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
 
-    @Binds
-    fun bindNavigator(impl: TrainingLineApp): Navigator
 
-}
-
-@ScreenScope
-@Component(modules = [HomeScreenModule::class], dependencies = [AppComponent::class])
-interface HomeScreenComponent {
-    fun provideHomeScreenPresenter(): HomeScreenContract.Presenter
-
-}
 
 
 

@@ -1,8 +1,31 @@
-package com.trainlingline.part_6_binds_instance
+package com.trainlingline.part_8_component_dependancies
 
 import dagger.Binds
+import dagger.Component
 import dagger.Module
 import javax.inject.Inject
+
+@ScreenScope
+@Component(
+    modules = [TicketScreenModule::class, TicketRepoModule::class],
+    dependencies = [AppComponent::class]
+)
+interface TicketScreenComponent {
+
+    fun provideTicketScreenPresenter(): TicketsScreenContract.Presenter
+}
+
+@Module
+interface TicketScreenModule {
+
+    @Binds
+    fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
+
+    @Binds
+    fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
+
+}
+
 
 interface TicketsScreenContract {
 
@@ -34,13 +57,3 @@ class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen {
     }
 }
 
-@Module
-interface TicketScreenModule {
-
-    @Binds
-    fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
-
-    @Binds
-    fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
-
-}

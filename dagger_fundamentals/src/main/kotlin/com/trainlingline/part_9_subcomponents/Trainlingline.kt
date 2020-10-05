@@ -1,44 +1,19 @@
-package com.trainlingline.part_8_subcomponents
+package com.trainlingline.part_9_subcomponents
 
 import dagger.*
 import okhttp3.OkHttpClient
-import javax.inject.Inject
 import javax.inject.Scope
 import javax.inject.Singleton
-
-
-@Module
-class NetworkModule {
-
-    @Singleton
-    @Provides
-    fun provideOkHttp() = OkHttpClient()
-
-}
-
-
-interface Navigator {
-
-    fun showHomeScreen()
-
-    fun showTickets()
-
-}
-
 
 @Singleton
 @Component(modules = [UserRepoModule::class, NetworkModule::class])
 interface AppComponent {
 
-    fun provideHomeScreenComponentBuilder(): HomeScreenSubComponent.Builder
+    fun provideHomeScreenBuilder(): HomeScreenSubcomponent.Builder
 
-    fun providerTicketScreenBuilder(): TicketScreenSubComponent.Builder
-
-    fun okHttp(): OkHttpClient
+    fun providerTicketScreenBuilder(): TicketScreenSubcomponent.Builder
 
     fun trainLineApp(): TrainingLineApp
-
-    fun userRepo(): UserRepo
 
     fun inject(app: TrainingLineApp)
 
@@ -53,11 +28,36 @@ interface AppComponent {
 
 }
 
+@Module(subcomponents = [TicketScreenSubcomponent::class])
+interface SubComponentModule {
+
+}
 
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ScreenScope
 
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ViewScope
+
+
+@Module
+class NetworkModule {
+
+    @Singleton
+    @Provides
+    fun provideOkHttp() = OkHttpClient()
+
+}
+
+interface Navigator {
+
+    fun showHomeScreen()
+
+    fun showTickets()
+
+}
 
 class TrainingLineApp : Navigator {
 
@@ -74,14 +74,16 @@ class TrainingLineApp : Navigator {
             .build()
 
         homeScreenPresenter = appComponent
-            .provideHomeScreenComponentBuilder()
+            .provideHomeScreenBuilder()
             .build()
-            .provideHomeScreenPresenter()
+            .homeScreenPresenter()
 
         ticketScreenPresenter = appComponent
             .providerTicketScreenBuilder()
             .build()
-            .provideTicketScreenPresenter()
+            .ticketScreenPresenter()
+
+        showHomeScreen()
     }
 
 

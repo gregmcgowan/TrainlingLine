@@ -1,4 +1,4 @@
-package com.trainlingline.part_6_binds_instance
+package com.trainlingline.part_6_qualifiers
 
 import dagger.Binds
 import dagger.Module

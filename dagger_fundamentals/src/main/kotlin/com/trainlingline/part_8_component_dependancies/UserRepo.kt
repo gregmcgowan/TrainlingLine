@@ -1,9 +1,18 @@
-package com.trainlingline.part_7_component_dependancies
+package com.trainlingline.part_8_component_dependancies
 
 import dagger.Binds
 import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
+
+@Module
+interface UserRepoModule {
+
+    @Binds
+    fun bindRepo(impl: RemoteUserRepo): UserRepo
+
+}
+
 
 interface UserRepo {
     fun getUser(userId: String): User
@@ -19,15 +28,6 @@ class RemoteUserRepo @Inject constructor(
         // Pretend we have some okhttp code here
         return User("User")
     }
-}
-
-
-@Module
-interface UserRepoModule {
-
-    @Binds
-    fun bindRepo(impl: RemoteUserRepo): UserRepo
-
 }
 
 

@@ -1,4 +1,4 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_7_binds_instance
 
 import dagger.Binds
 import dagger.Module
@@ -14,10 +14,6 @@ data class User(val name: String)
 class RemoteUserRepo @Inject constructor(
     private val okHttpClient: OkHttpClient
 ) : UserRepo {
-
-    init {
-        println("okHttpClient = $okHttpClient")
-    }
 
     override fun getUser(userId: String): User {
         // Pretend we have some okhttp code here

@@ -1,0 +1,16 @@
+Exercises
+1. What happens if we change
+
+@Binds
+fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
+
+to
+
+@Binds
+fun bindPresenter(impl: HomeScreenPresenter, naughty: String): HomeScreenContract.Presenter
+
+What happens?
+
+2. HomeScreenModule is an interface. Where is the implementation of this?
+
+3. Apart from an interface, what other ways can we define a @Module?

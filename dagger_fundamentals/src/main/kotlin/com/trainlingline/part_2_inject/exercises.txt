@@ -1,0 +1,8 @@
+1) What happens when we remove @Inject from HomePresenter or HomeScreen?
+
+2) Can you find where TrainingLineApp.homeScreenPresenter is set?
+
+3) What happens when if you add the following method to AppComponent?
+
+fun inject(app : TrainingLineApp, naughty : String)
+Why does it happen?

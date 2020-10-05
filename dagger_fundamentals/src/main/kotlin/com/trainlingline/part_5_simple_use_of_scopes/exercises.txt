@@ -1,0 +1,14 @@
+1. How does dagger use the scope annotation?
+
+Consider the when we had @Singleton on the @Provides for OkHttp and
+
+Can you explain the output? What is the difference in the generated code for both scenarios?
+
+2. Is there any other built in scope annotations? When should they be used?
+
+
+Reusable is a built in scope that allows you to indicate that the object returned by a
+binding may be (but might not be) reused.
+
+It is a "special" scope as adding it will not require a @Scope to be added to the component it is
+used in. Also means it can be used in any component regardless of it's scope.

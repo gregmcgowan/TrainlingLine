@@ -34,7 +34,7 @@ interface UserRepoModule {
 }
 
 @Module
-class NetworkModule {
+object NetworkModule {
 
     @Provides
     fun provideOkHttp() = OkHttpClient()

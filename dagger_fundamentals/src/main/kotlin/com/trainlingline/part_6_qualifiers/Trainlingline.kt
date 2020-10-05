@@ -1,6 +1,5 @@
-package com.trainlingline.part_6_binds_instance
+package com.trainlingline.part_6_qualifiers
 
-import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
@@ -8,21 +7,12 @@ import okhttp3.OkHttpClient
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Module
 class NetworkModule {
 
     @Singleton
     @Provides
     fun provideOkHttp() = OkHttpClient()
-
-}
-
-interface Navigator {
-
-    fun showHomeScreen()
-
-    fun showTickets()
 
 }
 
@@ -39,32 +29,11 @@ interface Navigator {
 )
 interface AppComponent {
 
-
     fun inject(app: TrainingLineApp)
-
-    /**
-     * We can override the existing default builder by doing this
-     */
-    @Component.Builder
-    interface Builder {
-
-        /**
-         * @BindsInstance allows us to insert a object into the graph. This can be used
-         * to add objects that we don't control the creation of.
-         *
-         * Once it is in the graph we can use @Bind elsewhere to inject it.
-         *
-         */
-        @BindsInstance
-        fun application(application: TrainingLineApp): Builder
-
-        fun build(): AppComponent
-    }
-
 }
 
 
-class TrainingLineApp : Navigator {
+class TrainingLineApp {
 
     @Inject
     lateinit var homeScreenPresenter: HomeScreenContract.Presenter
@@ -74,20 +43,22 @@ class TrainingLineApp : Navigator {
 
     fun start() {
         DaggerAppComponent.builder()
-            .application(this)
+            .ticketScreenModule(TicketScreenModule("Greg", "1"))
             .build()
             .inject(this)
 
         showHomeScreen()
+        // after selecting user
+        showTickets()
     }
 
 
-    override fun showHomeScreen() {
+    fun showHomeScreen() {
         homeScreenPresenter.present()
     }
 
     // not used yet but will be
-    override fun showTickets() {
+    fun showTickets() {
         ticketScreenPresenter.present()
     }
 }
@@ -96,7 +67,6 @@ class TrainingLineApp : Navigator {
 fun main() {
     TrainingLineApp().start()
 }
-
 
 
 

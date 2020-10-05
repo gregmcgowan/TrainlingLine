@@ -1,0 +1,4 @@
+If we can't tell dagger to create an object using @Inject on the constructor. We can use @Provides.
+
+This could be because we don't own the class (e.g it is a third party library)
+or the class may depend on a class that we can't create (more on this later).
