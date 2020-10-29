@@ -1,19 +1,44 @@
-package com.trainlingline.part_9_subcomponents
+package com.trainlingline.part_11_dagger_traindroid
 
 import dagger.Binds
 import dagger.Module
 import dagger.Subcomponent
 import javax.inject.Inject
 
+class TicketHustle : Hustle() {
+
+    @Inject
+    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
+
+    override fun start() {
+        super.start()
+        InjectionOfHustle.inject(this)
+
+//        ((app as TrainingLineApp).appComponent)
+//            .providerTicketScreenBuilder()
+//            .build()
+//            .inject(this)
+
+        ticketScreenPresenter.present()
+    }
+
+    override fun stop() {
+        super.stop()
+        ticketScreenPresenter.stop()
+    }
+}
+
 @ScreenScope
 @Subcomponent(modules = [TicketScreenModule::class, TicketRepoModule::class])
-interface TicketScreenSubcomponent {
+interface TicketScreenSubcomponent : HustleInjector<TicketHustle> {
+
+    override fun inject(hustle: TicketHustle)
 
     fun ticketScreenPresenter(): TicketsScreenContract.Presenter
 
     @Subcomponent.Builder
-    interface Builder {
-        fun build(): TicketScreenSubcomponent
+    interface Builder : HustleInjector.Factory<TicketHustle> {
+        override fun build(): TicketScreenSubcomponent
     }
 }
 
@@ -61,6 +86,7 @@ interface TicketsScreenContract {
 
     interface Presenter {
         fun present()
+        fun stop()
     }
 
     interface Screen {
@@ -109,7 +135,9 @@ class TicketsScreenPresenter @Inject constructor(
                     present()
                 }
         }
+    }
 
+    override fun stop() {
 
     }
 }
@@ -118,11 +146,11 @@ class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen,
     TicketsScreenContract.Interactions {
 
     override fun show() {
-        println("Showing TicketsScreen " + this)
+        println("Showing TicketsScreen $this")
     }
 
     override fun something() {
-        println("doing something on TicketsScreen" + this)
+
     }
 }
 
@@ -141,7 +169,8 @@ class TicketScreenListPresenter @Inject constructor(
 }
 
 
-class TicketScreenListView @Inject constructor() : TicketScreenListContract.View {
+class TicketScreenListView @Inject constructor() :
+    TicketScreenListContract.View {
 
     override fun showTickets(tickets: List<Ticket>) {
         print("Showing ticket list")

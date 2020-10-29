@@ -1,13 +1,26 @@
-package com.trainlingline.part_9_subcomponents
+package com.trainlingline.part_11_dagger_traindroid
 
 import dagger.*
+import dagger.multibindings.ClassKey
+import dagger.multibindings.IntoMap
+import dagger.multibindings.StringKey
 import okhttp3.OkHttpClient
+import javax.inject.Inject
 import javax.inject.Scope
 import javax.inject.Singleton
+import kotlin.reflect.KClass
 
 @Singleton
-@Component(modules = [UserRepoModule::class, NetworkModule::class])
+@Component(
+    modules = [
+        UserRepoModule::class,
+        NetworkModule::class,
+        AppSubComponentBuilders::class
+    ]
+)
 interface AppComponent {
+
+    fun provideMap(): Map<Class<*>, @JvmSuppressWildcards HustleInjector.Factory<*>>
 
     fun provideHomeScreenBuilder(): HomeScreenSubcomponent.Builder
 
@@ -28,8 +41,18 @@ interface AppComponent {
 
 }
 
-@Module(subcomponents = [TicketScreenSubcomponent::class])
-interface SubComponentModule {
+@Module
+interface AppSubComponentBuilders {
+
+    @Binds
+    @IntoMap
+    @HustleKey(HomeHustle::class)
+    fun bindHomeBuilder(impl: HomeScreenSubcomponent.Builder): HustleInjector.Factory<*>
+
+    @Binds
+    @IntoMap
+    @HustleKey(TicketHustle::class)
+    fun bindTicketBuilder(impl: TicketScreenSubcomponent.Builder): HustleInjector.Factory<*>
 
 }
 
@@ -59,12 +82,12 @@ interface Navigator {
 
 }
 
-class TrainingLineApp : Navigator {
+class TrainingLineApp : HasHustleInjector<Any>, Navigator, HustleApp() {
 
     lateinit var appComponent: AppComponent
 
-    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
-    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
+    @Inject
+    lateinit var injector: HustleInjectorDispatcher<Any>
 
     fun start() {
         appComponent = DaggerAppComponent
@@ -72,25 +95,19 @@ class TrainingLineApp : Navigator {
             .application(this)
             .build()
 
-
-        ticketScreenPresenter = appComponent
-            .providerTicketScreenBuilder()
-            .build()
-            .ticketScreenPresenter()
+        appComponent.inject(this)
     }
 
 
     override fun showHomeScreen() {
-        appComponent
-            .provideHomeScreenBuilder()
-            .build()
-            .homeScreenPresenter()
-            .present()
+        start(HomeHustle::class)
     }
 
     override fun showTickets() {
-        ticketScreenPresenter.present()
+        start(TicketHustle::class)
     }
+
+    override fun injector(): HustleInjector<Any> = injector
 }
 
 

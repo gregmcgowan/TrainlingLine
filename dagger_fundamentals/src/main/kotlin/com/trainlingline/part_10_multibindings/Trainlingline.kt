@@ -1,6 +1,5 @@
 package com.trainlingline.part_10_multibindings
 
-import com.trainlingline.part_10_mutli_bindings.DaggerAppComponent
 import dagger.*
 import okhttp3.OkHttpClient
 import javax.inject.Scope
