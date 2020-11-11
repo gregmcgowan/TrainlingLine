@@ -1,4 +1,4 @@
-package com.trainlingline.part_8_component_dependancies
+package com.trainlingline.hustle
 
 import dagger.Binds
 import dagger.Module
@@ -25,7 +25,6 @@ class RemoteUserRepo @Inject constructor(
 ) : UserRepo {
 
     override fun getUser(userId: String): User {
-        // Pretend we have some okhttp code here
         return User("User")
     }
 }

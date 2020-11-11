@@ -1,20 +1,46 @@
-package com.trainlingline.part_10_multibindings
+package com.trainlingline.hustle
 
 import dagger.Binds
 import dagger.Module
 import dagger.Subcomponent
 import javax.inject.Inject
 
+class TicketHustle : Hustle() {
+
+    @Inject
+    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
+
+    override fun start() {
+        //TODO implement this
+        InjectionOfHustle.inject(this)
+
+        //TODO remove this
+        ((app as TrainingLineApp).appComponent)
+            .providerTicketScreenBuilder()
+            .build()
+            .inject(this)
+
+        ticketScreenPresenter.present()
+    }
+
+    override fun stop() {
+        ticketScreenPresenter.stop()
+    }
+}
+
 @ScreenScope
 @Subcomponent(modules = [TicketScreenModule::class, TicketRepoModule::class])
 interface TicketScreenSubcomponent {
 
+    fun inject(hustle: TicketHustle)
+
     fun ticketScreenPresenter(): TicketsScreenContract.Presenter
 
-    @Subcomponent.Factory
+    @Subcomponent.Builder
     interface Builder {
         fun build(): TicketScreenSubcomponent
     }
+
 }
 
 @Module(subcomponents = [TicketListSubcomponent::class])
@@ -40,8 +66,8 @@ interface TicketListSubcomponent {
     fun interactions(): TicketsScreenContract.Interactions
     fun ticketScreenListPresenter(): TicketScreenListContract.Presenter
 
-    @Subcomponent.Factory
-    interface Factory {
+    @Subcomponent.Builder
+    interface Builder {
         fun build(): TicketListSubcomponent
     }
 }
@@ -61,6 +87,7 @@ interface TicketsScreenContract {
 
     interface Presenter {
         fun present()
+        fun stop()
     }
 
     interface Screen {
@@ -87,7 +114,7 @@ interface TicketScreenListContract {
 class TicketsScreenPresenter @Inject constructor(
     private val ticketsRepo: TicketRepo,
     private val screen: TicketsScreenContract.Screen,
-    private val ticketListBuilder: TicketListSubcomponent.Factory
+    private val ticketListBuilder: TicketListSubcomponent.Builder
 ) : TicketsScreenContract.Presenter {
 
     override fun present() {
@@ -99,26 +126,31 @@ class TicketsScreenPresenter @Inject constructor(
 
         // now later a list is needed
         // and we can create it
-        val build = ticketListBuilder
-            .build()
+        val builder = ticketListBuilder.build()
+        with(builder) {
+            val interactions = interactions();
+            ticketScreenListPresenter()
+                .apply {
+                    init(interactions)
+                    present()
+                }
+        }
+    }
 
-        build.ticketScreenListPresenter().present()
-        build.interactions().something()
-
+    override fun stop() {
 
     }
 }
 
-@ScreenScope
 class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen,
     TicketsScreenContract.Interactions {
 
     override fun show() {
-        println("Showing TicketsScreen " + this)
+        println("Showing TicketsScreen : $this")
     }
 
     override fun something() {
-        println("doing something " + this)
+        println("Doing something with TicketsScreen $this")
     }
 }
 

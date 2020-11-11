@@ -1,12 +1,20 @@
-package com.trainlingline.part_9_subcomponents
+package com.trainlingline.hustle
 
-import dagger.*
+import dagger.BindsInstance
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import okhttp3.OkHttpClient
 import javax.inject.Scope
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [UserRepoModule::class, NetworkModule::class])
+@Component(
+    modules = [
+        UserRepoModule::class,
+        NetworkModule::class
+    ]
+)
 interface AppComponent {
 
     fun provideHomeScreenBuilder(): HomeScreenSubcomponent.Builder
@@ -28,10 +36,6 @@ interface AppComponent {
 
 }
 
-@Module(subcomponents = [TicketScreenSubcomponent::class])
-interface SubComponentModule {
-
-}
 
 @Scope
 @Retention(AnnotationRetention.RUNTIME)
@@ -59,46 +63,34 @@ interface Navigator {
 
 }
 
-class TrainingLineApp : Navigator {
+class TrainingLineApp : Navigator, HustleApp() {
 
     lateinit var appComponent: AppComponent
 
-    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
-
-    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
-
     fun start() {
-        appComponent = DaggerAppComponent
-            .builder()
+        appComponent = DaggerAppComponent.builder()
             .application(this)
             .build()
 
-        homeScreenPresenter = appComponent
-            .provideHomeScreenBuilder()
-            .build()
-            .homeScreenPresenter()
-
-        ticketScreenPresenter = appComponent
-            .providerTicketScreenBuilder()
-            .build()
-            .ticketScreenPresenter()
-
-        showHomeScreen()
+        appComponent.inject(this)
     }
 
 
     override fun showHomeScreen() {
-        homeScreenPresenter.present()
+        start(HomeHustle::class)
     }
 
     override fun showTickets() {
-        ticketScreenPresenter.present()
+        start(TicketHustle::class)
     }
 }
 
 
 fun main() {
-    TrainingLineApp().start()
+    val trainingLineApp = TrainingLineApp()
+    trainingLineApp.start()
+    trainingLineApp.showHomeScreen()
+    trainingLineApp.showTickets()
 }
 
 

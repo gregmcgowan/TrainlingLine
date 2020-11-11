@@ -1,2 +1,0 @@
-1. Change HomeScreenModule to use @Provides instead of @Binds.
-Compare the two approaches, which one is better?

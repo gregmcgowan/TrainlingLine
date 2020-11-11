@@ -1,34 +1,9 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.hustle
 
 import dagger.Binds
 import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
-
-interface TicketRepo {
-
-    fun getTicketsForUser(userID: String): List<Ticket>
-
-}
-
-class RemoteTicketRepo @Inject constructor(
-    private val okHttpClient: OkHttpClient
-) : TicketRepo {
-
-    init {
-        println("okHttpClient = $okHttpClient")
-    }
-
-    override fun getTicketsForUser(userID: String): List<Ticket> {
-        // do something with ok http
-
-        return listOf(Ticket("return"))
-    }
-}
-
-
-data class Ticket(val ticketName: String)
-
 
 @Module
 interface TicketRepoModule {
@@ -37,3 +12,20 @@ interface TicketRepoModule {
     fun bindRepo(impl: RemoteTicketRepo): TicketRepo
 
 }
+
+interface TicketRepo {
+    fun getTicketsForUser(userID: String): List<Ticket>
+}
+
+class RemoteTicketRepo @Inject constructor(
+    private val okHttpClient: OkHttpClient
+) : TicketRepo {
+
+    override fun getTicketsForUser(userID: String): List<Ticket> {
+        return listOf(Ticket("return"))
+    }
+}
+
+
+data class Ticket(val ticketName: String)
+

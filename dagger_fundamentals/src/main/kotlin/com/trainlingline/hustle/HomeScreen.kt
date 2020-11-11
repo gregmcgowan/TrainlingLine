@@ -1,13 +1,38 @@
-package com.trainlingline.part_9_subcomponents
+package com.trainlingline.hustle
 
 import dagger.Binds
 import dagger.Module
 import dagger.Subcomponent
 import javax.inject.Inject
 
+class HomeHustle : Hustle() {
+
+    @Inject
+    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
+
+    override fun start() {
+        //TODO implement this
+        InjectionOfHustle.inject(this)
+
+        //TODO remove this
+        ((app as TrainingLineApp).appComponent)
+            .provideHomeScreenBuilder()
+            .build()
+            .inject(this)
+
+        homeScreenPresenter.present()
+    }
+
+    override fun stop() {
+        homeScreenPresenter.stop()
+    }
+}
+
 @ScreenScope
 @Subcomponent(modules = [HomeScreenModule::class])
 interface HomeScreenSubcomponent {
+
+    fun inject(hustle: HomeHustle)
 
     fun homeScreenPresenter(): HomeScreenContract.Presenter
 
@@ -35,6 +60,7 @@ interface HomeScreenContract {
 
     interface Presenter {
         fun present()
+        fun stop()
     }
 
     interface Screen {
@@ -44,17 +70,17 @@ interface HomeScreenContract {
 
 class HomeScreenPresenter @Inject constructor(
     private val userRepo: UserRepo,
-    private val screen: HomeScreenContract.Screen,
-    private val navigator: Navigator
+    private val screen: HomeScreenContract.Screen
 ) : HomeScreenContract.Presenter {
 
     override fun present() {
         userRepo.getUser("1")
         // Do some stuff
         screen.show()
+    }
 
-        // after some user input
-        navigator.showTickets()
+    override fun stop() {
+
     }
 }
 
