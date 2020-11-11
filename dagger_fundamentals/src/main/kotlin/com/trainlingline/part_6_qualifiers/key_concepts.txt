@@ -1,4 +1,0 @@
-1. If we have more than one parameter or field of the same type as a dependency then we can use
-@Qualifier to distinguish between them
-
-2. @Named is a built in qualifier that we can use.

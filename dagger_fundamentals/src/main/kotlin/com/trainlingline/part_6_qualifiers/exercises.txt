@@ -1,2 +1,0 @@
-We could use @Named for all our qualifiers. What would be the downsides of doing that?
-Is there any other options we have for qualifiers?

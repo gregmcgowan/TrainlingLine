@@ -1,14 +1,11 @@
-package com.trainlingline.part_11_dagger_traindroid
+package com.trainlingline.hustle
 
 import dagger.*
-import dagger.multibindings.ClassKey
 import dagger.multibindings.IntoMap
-import dagger.multibindings.StringKey
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 import javax.inject.Scope
 import javax.inject.Singleton
-import kotlin.reflect.KClass
 
 @Singleton
 @Component(

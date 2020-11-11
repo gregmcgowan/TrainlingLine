@@ -1,4 +1,4 @@
-package com.trainlingline.part_11_dagger_traindroid
+package com.trainlingline.hustle
 
 import kotlin.reflect.KClass
 
