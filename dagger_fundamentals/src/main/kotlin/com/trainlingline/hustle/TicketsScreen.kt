@@ -13,12 +13,6 @@ class TicketHustle : Hustle() {
     override fun start() {
         super.start()
         InjectionOfHustle.inject(this)
-
-//        ((app as TrainingLineApp).appComponent)
-//            .providerTicketScreenBuilder()
-//            .build()
-//            .inject(this)
-
         ticketScreenPresenter.present()
     }
 
@@ -31,8 +25,6 @@ class TicketHustle : Hustle() {
 @ScreenScope
 @Subcomponent(modules = [TicketScreenModule::class, TicketRepoModule::class])
 interface TicketScreenSubcomponent : HustleInjector<TicketHustle> {
-
-    override fun inject(hustle: TicketHustle)
 
     fun ticketScreenPresenter(): TicketsScreenContract.Presenter
 

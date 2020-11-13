@@ -11,12 +11,6 @@ class HomeHustle : Hustle() {
 
     override fun start() {
         InjectionOfHustle.inject(this)
-
-//        ((app as TrainingLineApp).appComponent)
-//            .providerTicketScreenBuilder()
-//            .build()
-//            .inject(this)
-
         homeScreenPresenter.present()
     }
 
@@ -28,8 +22,6 @@ class HomeHustle : Hustle() {
 @ScreenScope
 @Subcomponent(modules = [HomeScreenModule::class])
 interface HomeScreenSubcomponent : HustleInjector<HomeHustle> {
-
-    override fun inject(hustle: HomeHustle)
 
     fun homeScreenPresenter(): HomeScreenContract.Presenter
 

@@ -4,14 +4,6 @@ import dagger.MapKey
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
-@Target(
-    AnnotationTarget.FUNCTION,
-    AnnotationTarget.PROPERTY_GETTER,
-    AnnotationTarget.PROPERTY_SETTER
-)
-@Retention(AnnotationRetention.RUNTIME)
-@MapKey
-annotation class HustleKey(val value: KClass<*>)
 
 object InjectionOfHustle {
 
@@ -19,6 +11,20 @@ object InjectionOfHustle {
         (hustle.app as HasHustleInjector<Any>).injector().inject(hustle)
     }
 }
+
+interface HustleInjector<H> {
+
+    fun inject(hustle: H)
+
+    interface Factory<H : Any> {
+        fun build(): HustleInjector<H>
+    }
+}
+
+interface HasHustleInjector<H : Any> {
+    fun injector(): HustleInjector<H>
+}
+
 
 class HustleInjectorDispatcher<H : Any> @Inject constructor(
     private val factoryMap: Map<Class<*>, @JvmSuppressWildcards HustleInjector.Factory<*>>
@@ -31,16 +37,16 @@ class HustleInjectorDispatcher<H : Any> @Inject constructor(
     }
 }
 
-interface HasHustleInjector<H : Any> {
-    fun injector(): HustleInjector<H>
-}
+@Target(
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER
+)
+@Retention(AnnotationRetention.RUNTIME)
+@MapKey
+annotation class HustleKey(val value: KClass<*>)
 
 
-interface HustleInjector<H> {
 
-    fun inject(hustle: H)
 
-    interface Factory<H : Any> {
-        fun build(): HustleInjector<H>
-    }
-}
+

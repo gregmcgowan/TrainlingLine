@@ -16,9 +16,7 @@ import javax.inject.Singleton
     ]
 )
 interface AppComponent {
-
-    fun provideMap(): Map<Class<*>, @JvmSuppressWildcards HustleInjector.Factory<*>>
-
+    
     fun provideHomeScreenBuilder(): HomeScreenSubcomponent.Builder
 
     fun providerTicketScreenBuilder(): TicketScreenSubcomponent.Builder
