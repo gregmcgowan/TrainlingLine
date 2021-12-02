@@ -6,12 +6,27 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
+@Module
+interface UserRepoModule {
+
+    @Binds
+    fun bindRepo(impl: RemoteUserRepo): UserRepo
+
+}
+
+@Module
+class NetworkModule {
+
+    @Provides
+    fun provideOkHttp() = OkHttpClient()
+
+}
+
 interface UserRepo {
     fun getUser(userId: String): User
 }
 
 data class User(val name: String)
-
 
 
 class RemoteUserRepo @Inject constructor(
@@ -25,18 +40,3 @@ class RemoteUserRepo @Inject constructor(
 }
 
 
-@Module
-interface UserRepoModule {
-
-    @Binds
-    fun bindRepo(impl: RemoteUserRepo): UserRepo
-
-}
-
-@Module
-object NetworkModule {
-
-    @Provides
-    fun provideOkHttp() = OkHttpClient()
-
-}
