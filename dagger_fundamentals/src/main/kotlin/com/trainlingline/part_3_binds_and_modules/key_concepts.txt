@@ -1,8 +1,0 @@
-Key concepts
-1. We can associate an implementation with an interface using @Binds
-
-
-2. We can encapsulate contributions to the application graph by using @Module
-
-3. @Components can have several modules and they are included in the annotation deceleration
-@Component (modules = ....)
