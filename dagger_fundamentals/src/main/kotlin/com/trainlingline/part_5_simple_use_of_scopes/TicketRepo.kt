@@ -5,6 +5,14 @@ import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
+@Module
+interface TicketRepoModule {
+
+    @Binds
+    fun bindRepo(impl: RemoteTicketRepo): TicketRepo
+
+}
+
 interface TicketRepo {
 
     fun getTicketsForUser(userID: String): List<Ticket>
@@ -20,8 +28,8 @@ class RemoteTicketRepo @Inject constructor(
     }
 
     override fun getTicketsForUser(userID: String): List<Ticket> {
-        // do something with ok http
-
+        // non-sense okhttp call so that it is used
+        okHttpClient.cache
         return listOf(Ticket("return"))
     }
 }
@@ -30,10 +38,3 @@ class RemoteTicketRepo @Inject constructor(
 data class Ticket(val ticketName: String)
 
 
-@Module
-interface TicketRepoModule {
-
-    @Binds
-    fun bindRepo(impl: RemoteTicketRepo): TicketRepo
-
-}

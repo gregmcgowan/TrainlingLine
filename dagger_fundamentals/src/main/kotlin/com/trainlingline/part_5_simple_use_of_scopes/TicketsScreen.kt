@@ -4,6 +4,17 @@ import dagger.Binds
 import dagger.Module
 import javax.inject.Inject
 
+@Module
+interface TicketScreenModule {
+
+    @Binds
+    fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
+
+    @Binds
+    fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
+
+}
+
 interface TicketsScreenContract {
 
     interface Presenter {
@@ -34,13 +45,3 @@ class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen {
     }
 }
 
-@Module
-interface TicketScreenModule {
-
-    @Binds
-    fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
-
-    @Binds
-    fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
-
-}
