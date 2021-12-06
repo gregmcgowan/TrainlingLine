@@ -7,31 +7,9 @@ import okhttp3.OkHttpClient
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Module
-class NetworkModule {
-
-    @Singleton
-    @Provides
-    fun provideOkHttp() = OkHttpClient()
-
+fun main() {
+    TrainingLineApp().start()
 }
-
-
-@Singleton
-@Component(
-    modules = [
-        NetworkModule::class,
-        UserRepoModule::class,
-        TicketRepoModule::class,
-        HomeScreenModule::class,
-        TicketScreenModule::class
-    ]
-)
-interface AppComponent {
-
-    fun inject(app: TrainingLineApp)
-}
-
 
 class TrainingLineApp {
 
@@ -63,10 +41,36 @@ class TrainingLineApp {
     }
 }
 
+@Module
+class NetworkModule {
 
-fun main() {
-    TrainingLineApp().start()
+    @Singleton
+    @Provides
+    fun provideOkHttp() = OkHttpClient()
+
 }
+
+
+@Singleton
+@Component(
+    modules = [
+        NetworkModule::class,
+        UserRepoModule::class,
+        TicketRepoModule::class,
+        HomeScreenModule::class,
+        TicketScreenModule::class
+    ]
+)
+interface AppComponent {
+
+    fun inject(app: TrainingLineApp)
+}
+
+
+
+
+
+
 
 
 

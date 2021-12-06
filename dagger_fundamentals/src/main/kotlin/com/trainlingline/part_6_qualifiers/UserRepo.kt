@@ -5,6 +5,14 @@ import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
+@Module
+interface UserRepoModule {
+
+    @Binds
+    fun bindRepo(impl: RemoteUserRepo): UserRepo
+
+}
+
 interface UserRepo {
 
     fun getUser(userId: String): User
@@ -24,12 +32,6 @@ class RemoteUserRepo @Inject constructor(
 }
 
 
-@Module
-interface UserRepoModule {
 
-    @Binds
-    fun bindRepo(impl: RemoteUserRepo): UserRepo
-
-}
 
 

@@ -5,6 +5,15 @@ import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
+
+@Module
+interface TicketRepoModule {
+
+    @Binds
+    fun bindRepo(impl: RemoteTicketRepo): TicketRepo
+
+}
+
 interface TicketRepo {
 
     fun getTicketsForUser(userID: String): List<Ticket>
@@ -25,10 +34,3 @@ class RemoteTicketRepo @Inject constructor(
 data class Ticket(val ticketName: String)
 
 
-@Module
-interface TicketRepoModule {
-
-    @Binds
-    fun bindRepo(impl: RemoteTicketRepo): TicketRepo
-
-}
