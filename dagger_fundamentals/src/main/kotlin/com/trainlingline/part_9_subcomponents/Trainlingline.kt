@@ -1,9 +1,49 @@
 package com.trainlingline.part_9_subcomponents
 
-import dagger.*
+import dagger.Component
+import dagger.Module
+import dagger.Provides
 import okhttp3.OkHttpClient
 import javax.inject.Scope
 import javax.inject.Singleton
+
+fun main() {
+    TrainingLineApp().also {
+        it.start()
+        it.showHomeScreen()
+        it.showTickets()
+    }
+}
+
+class TrainingLineApp {
+
+    lateinit var appComponent: AppComponent
+
+
+    fun start() {
+        appComponent = DaggerAppComponent
+            .builder()
+            .build()
+    }
+
+
+    fun showHomeScreen() {
+        appComponent
+            .provideHomeScreenBuilder()
+            .build()
+            .homeScreenPresenter()
+            .present()
+    }
+
+    fun showTickets() {
+        appComponent
+            .provideTicketScreenBuilder()
+            .build()
+            .ticketScreenPresenter()
+            .present()
+    }
+}
+
 
 @Singleton
 @Component(modules = [UserRepoModule::class, NetworkModule::class])
@@ -11,35 +51,11 @@ interface AppComponent {
 
     fun provideHomeScreenBuilder(): HomeScreenSubcomponent.Builder
 
-    fun providerTicketScreenBuilder(): TicketScreenSubcomponent.Builder
-
-    fun trainLineApp(): TrainingLineApp
+    fun provideTicketScreenBuilder(): TicketScreenSubcomponent.Builder
 
     fun inject(app: TrainingLineApp)
 
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        fun application(application: TrainingLineApp): Builder
-
-        fun build(): AppComponent
-    }
-
 }
-
-@Module(subcomponents = [TicketScreenSubcomponent::class])
-interface SubComponentModule {
-
-}
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ScreenScope
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ViewScope
 
 
 @Module
@@ -51,55 +67,16 @@ class NetworkModule {
 
 }
 
-interface Navigator {
 
-    fun showHomeScreen()
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ScreenScope
 
-    fun showTickets()
-
-}
-
-class TrainingLineApp : Navigator {
-
-    lateinit var appComponent: AppComponent
-
-    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
-    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
-
-    fun start() {
-        appComponent = DaggerAppComponent
-            .builder()
-            .application(this)
-            .build()
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ViewScope
 
 
-        ticketScreenPresenter = appComponent
-            .providerTicketScreenBuilder()
-            .build()
-            .ticketScreenPresenter()
-    }
-
-
-    override fun showHomeScreen() {
-        appComponent
-            .provideHomeScreenBuilder()
-            .build()
-            .homeScreenPresenter()
-            .present()
-    }
-
-    override fun showTickets() {
-        ticketScreenPresenter.present()
-    }
-}
-
-
-fun main() {
-    val trainingLineApp = TrainingLineApp()
-    trainingLineApp.start()
-    trainingLineApp.showHomeScreen()
-    trainingLineApp.showTickets()
-}
 
 
 

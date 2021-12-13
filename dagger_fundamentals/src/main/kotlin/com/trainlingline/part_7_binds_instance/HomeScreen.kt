@@ -4,6 +4,17 @@ import dagger.Binds
 import dagger.Module
 import javax.inject.Inject
 
+@Module
+interface HomeScreenModule {
+
+    @Binds
+    fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
+
+    @Binds
+    fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
+
+}
+
 interface HomeScreenContract {
 
     interface Presenter {
@@ -27,23 +38,13 @@ class HomeScreenPresenter @Inject constructor(
     }
 }
 
-class HomeScreen @Inject constructor() :
-    HomeScreenContract.Screen {
+class HomeScreen @Inject constructor() : HomeScreenContract.Screen {
 
     override fun show() {
         println("Showing main screen")
     }
 }
 
-@Module
-interface HomeScreenModule {
 
-    @Binds
-    fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
-
-    @Binds
-    fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
-
-}
 
 

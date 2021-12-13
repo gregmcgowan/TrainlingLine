@@ -11,7 +11,7 @@ interface TicketScreenSubcomponent {
 
     fun ticketScreenPresenter(): TicketsScreenContract.Presenter
 
-    @Subcomponent.Factory
+    @Subcomponent.Builder
     interface Builder {
         fun build(): TicketScreenSubcomponent
     }
@@ -27,21 +27,16 @@ interface TicketScreenModule {
     @ScreenScope
     fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
 
-    @Binds
-    @ScreenScope
-    fun bindInteractions(impl: TicketsScreen): TicketsScreenContract.Interactions
-
 }
 
 @ViewScope
 @Subcomponent(modules = [TicketScreenListModule::class])
 interface TicketListSubcomponent {
 
-    fun interactions(): TicketsScreenContract.Interactions
     fun ticketScreenListPresenter(): TicketScreenListContract.Presenter
 
-    @Subcomponent.Factory
-    interface Factory {
+    @Subcomponent.Builder
+    interface Builder {
         fun build(): TicketListSubcomponent
     }
 }
@@ -67,9 +62,6 @@ interface TicketsScreenContract {
         fun show()
     }
 
-    interface Interactions {
-        fun something()
-    }
 }
 
 interface TicketScreenListContract {
@@ -79,7 +71,6 @@ interface TicketScreenListContract {
     }
 
     interface Presenter {
-        fun init(interactions: TicketsScreenContract.Interactions)
         fun present()
     }
 }
@@ -87,49 +78,47 @@ interface TicketScreenListContract {
 class TicketsScreenPresenter @Inject constructor(
     private val ticketsRepo: TicketRepo,
     private val screen: TicketsScreenContract.Screen,
-    private val ticketListBuilder: TicketListSubcomponent.Factory
+    private val ticketListBuilder: TicketListSubcomponent.Builder,
+    private val helpers: Map<HelperType, @JvmSuppressWildcards Helper>
 ) : TicketsScreenContract.Presenter {
 
     override fun present() {
         // show some loading perhaps
         screen.show()
 
+        println("------ calling TicketsScreenPresenter helpers")
+        helpers.forEach { (helperType, helper) ->
+            println("$helperType")
+            helper.help()
+        }
+        println("------ finished TicketsScreenPresenter helpers")
         // but we need the tickets
         ticketsRepo.getTicketsForUser("1")
 
         // now later a list is needed
         // and we can create it
-        val build = ticketListBuilder
+        ticketListBuilder
             .build()
-
-        build.ticketScreenListPresenter().present()
-        build.interactions().something()
+            .ticketScreenListPresenter()
+            .apply { present() }
 
 
     }
 }
 
 @ScreenScope
-class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen,
-    TicketsScreenContract.Interactions {
+class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen {
 
     override fun show() {
-        println("Showing TicketsScreen " + this)
+        println("Showing TicketsScreen $this")
     }
 
-    override fun something() {
-        println("doing something " + this)
-    }
 }
 
 
 class TicketScreenListPresenter @Inject constructor(
     private val view: TicketScreenListContract.View
 ) : TicketScreenListContract.Presenter {
-
-    override fun init(interactions: TicketsScreenContract.Interactions) {
-        interactions.something()
-    }
 
     override fun present() {
         view.showTickets(emptyList())

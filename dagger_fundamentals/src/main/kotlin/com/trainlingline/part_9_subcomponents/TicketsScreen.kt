@@ -9,6 +9,7 @@ import javax.inject.Inject
 @Subcomponent(modules = [TicketScreenModule::class, TicketRepoModule::class])
 interface TicketScreenSubcomponent {
 
+
     fun ticketScreenPresenter(): TicketsScreenContract.Presenter
 
     @Subcomponent.Builder
@@ -24,12 +25,7 @@ interface TicketScreenModule {
     fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
 
     @Binds
-    @ScreenScope
     fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
-
-    @Binds
-    @ScreenScope
-    fun bindInteractions(impl: TicketsScreen): TicketsScreenContract.Interactions
 
 }
 
@@ -37,7 +33,6 @@ interface TicketScreenModule {
 @Subcomponent(modules = [TicketScreenListModule::class])
 interface TicketListSubcomponent {
 
-    fun interactions(): TicketsScreenContract.Interactions
     fun ticketScreenListPresenter(): TicketScreenListContract.Presenter
 
     @Subcomponent.Builder
@@ -67,9 +62,6 @@ interface TicketsScreenContract {
         fun show()
     }
 
-    interface Interactions {
-        fun something()
-    }
 }
 
 interface TicketScreenListContract {
@@ -79,7 +71,6 @@ interface TicketScreenListContract {
     }
 
     interface Presenter {
-        fun init(interactions: TicketsScreenContract.Interactions)
         fun present()
     }
 }
@@ -99,31 +90,20 @@ class TicketsScreenPresenter @Inject constructor(
 
         // now later a list is needed
         // and we can create it
-        val builder = ticketListBuilder
+        ticketListBuilder
             .build()
-        with(builder) {
-            val interactions = interactions();
-            ticketScreenListPresenter()
-                .apply {
-                    init(interactions)
-                    present()
-                }
-        }
-
-
+            .ticketScreenListPresenter()
+            .apply { present() }
     }
 }
 
-class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen,
-    TicketsScreenContract.Interactions {
+@ScreenScope
+class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen {
 
     override fun show() {
-        println("Showing TicketsScreen " + this)
+        println("Showing TicketsScreen")
     }
 
-    override fun something() {
-        println("doing something on TicketsScreen" + this)
-    }
 }
 
 
@@ -131,9 +111,6 @@ class TicketScreenListPresenter @Inject constructor(
     private val view: TicketScreenListContract.View
 ) : TicketScreenListContract.Presenter {
 
-    override fun init(interactions: TicketsScreenContract.Interactions) {
-        interactions.something()
-    }
 
     override fun present() {
         view.showTickets(emptyList())

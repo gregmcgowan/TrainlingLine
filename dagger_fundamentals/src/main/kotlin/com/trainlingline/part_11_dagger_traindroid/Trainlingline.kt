@@ -10,6 +10,43 @@ import javax.inject.Scope
 import javax.inject.Singleton
 import kotlin.reflect.KClass
 
+
+fun main() {
+    val trainingLineApp = TrainingLineApp()
+    trainingLineApp.start()
+    trainingLineApp.showHomeScreen()
+    trainingLineApp.showTickets()
+}
+
+
+class TrainingLineApp : HasHustleInjector<Any>, Navigator, HustleApp() {
+
+    lateinit var appComponent: AppComponent
+
+    @Inject
+    lateinit var injector: HustleInjectorDispatcher<Any>
+
+    fun start() {
+        appComponent = DaggerAppComponent
+            .builder()
+            .application(this)
+            .build()
+
+        appComponent.inject(this)
+    }
+
+
+    override fun showHomeScreen() {
+        start(HomeHustle::class)
+    }
+
+    override fun showTickets() {
+        start(TicketHustle::class)
+    }
+
+    override fun injector(): HustleInjector<Any> = injector
+}
+
 @Singleton
 @Component(
     modules = [
@@ -82,41 +119,9 @@ interface Navigator {
 
 }
 
-class TrainingLineApp : HasHustleInjector<Any>, Navigator, HustleApp() {
-
-    lateinit var appComponent: AppComponent
-
-    @Inject
-    lateinit var injector: HustleInjectorDispatcher<Any>
-
-    fun start() {
-        appComponent = DaggerAppComponent
-            .builder()
-            .application(this)
-            .build()
-
-        appComponent.inject(this)
-    }
 
 
-    override fun showHomeScreen() {
-        start(HomeHustle::class)
-    }
 
-    override fun showTickets() {
-        start(TicketHustle::class)
-    }
-
-    override fun injector(): HustleInjector<Any> = injector
-}
-
-
-fun main() {
-    val trainingLineApp = TrainingLineApp()
-    trainingLineApp.start()
-    trainingLineApp.showHomeScreen()
-    trainingLineApp.showTickets()
-}
 
 
 

@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.multibindings.ElementsIntoSet
 import dagger.multibindings.IntoSet
 import javax.inject.Named
-import javax.inject.Qualifier
 
 
 @Module
@@ -30,13 +29,11 @@ class HelperIntoSetModuleProvides {
 
     @Provides
     @IntoSet
-    fun provideGoodHelper(): Helper =
-        GoodHelper()
+    fun provideGoodHelper(): Helper = GoodHelper()
 
     @Provides
     @IntoSet
-    fun provideEvenBetterHelper(): Helper =
-        EvenBetterHelper()
+    fun provideEvenBetterHelper(): Helper = EvenBetterHelper()
 
 }
 

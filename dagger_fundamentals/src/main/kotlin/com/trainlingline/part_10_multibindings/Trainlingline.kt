@@ -6,9 +6,42 @@ import javax.inject.Scope
 import javax.inject.Singleton
 
 fun main() {
-    TrainingLineApp().start()
+    TrainingLineApp().also {
+        it.start()
+        it.showHomeScreen()
+        it.showTickets()
+    }
 }
 
+class TrainingLineApp {
+
+    lateinit var appComponent: AppComponent
+
+    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
+
+    fun start() {
+        appComponent = DaggerAppComponent.create()
+        println("------ calling app component helpers")
+        appComponent.mapOfHelpers().forEach { it.value.help() }
+        println("------ finished calling app component helpers \n")
+    }
+
+    fun showHomeScreen() {
+        appComponent
+            .provideHomeScreenBuilder()
+            .build()
+            .homeScreenPresenter()
+            .present()
+    }
+
+    fun showTickets() {
+        appComponent
+            .provideTicketScreenBuilder()
+            .build()
+            .ticketScreenPresenter()
+            .present()
+    }
+}
 
 @Singleton
 @Component(
@@ -16,7 +49,8 @@ fun main() {
         UserRepoModule::class,
         NetworkModule::class,
         HelperElementsIntoSetModule::class,
-        MapMultiBindingsComplexKeys::class]
+        MapMultiBindingsComplexKeys::class
+    ]
 )
 interface AppComponent {
 
@@ -26,73 +60,11 @@ interface AppComponent {
 
     fun provideHomeScreenBuilder(): HomeScreenSubcomponent.Builder
 
-    fun providerTicketScreenBuilder(): TicketScreenSubcomponent.Builder
-
-    fun trainLineApp(): TrainingLineApp
+    fun provideTicketScreenBuilder(): TicketScreenSubcomponent.Builder
 
     fun inject(app: TrainingLineApp)
 
-    @Component.Builder
-    interface Builder {
-
-        @BindsInstance
-        fun application(application: TrainingLineApp): Builder
-
-        fun build(): AppComponent
-
-    }
-
 }
-
-class TrainingLineApp : Navigator {
-
-    lateinit var appComponent: AppComponent
-    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
-    lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
-
-    fun start() {
-        appComponent = DaggerAppComponent.builder()
-            .application(this)
-            .build()
-       // appComponent.setOfHelpers().forEach { it.help() }
-        //appComponent.setOfHelpers().forEach { it.help() }
-        appComponent.mapOfHelpers().forEach { it.value.help() }
-
-        //println("new line")
-        homeScreenPresenter = appComponent
-            .provideHomeScreenBuilder()
-            .build()
-            .homeScreenPresenter()
-
-        ticketScreenPresenter = appComponent
-            .providerTicketScreenBuilder()
-            .build()
-            .ticketScreenPresenter()
-        showHomeScreen()
-
-//        println("new line")
-//        appComponent.setOfHelpers().forEach { it.help() }
-
-    }
-
-
-    override fun showHomeScreen() {
-        homeScreenPresenter.present()
-    }
-
-    override fun showTickets() {
-        ticketScreenPresenter.present()
-    }
-}
-
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ScreenScope
-
-@Scope
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ViewScope
 
 
 @Module
@@ -104,13 +76,14 @@ class NetworkModule {
 
 }
 
-interface Navigator {
 
-    fun showHomeScreen()
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ScreenScope
 
-    fun showTickets()
-
-}
+@Scope
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ViewScope
 
 
 

@@ -2,9 +2,25 @@ package com.trainlingline.part_7_binds_instance
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import javax.inject.Inject
 import javax.inject.Named
+
+@Module(includes = [TicketScreenModule.Bindings::class, TicketRepoModule::class])
+class TicketScreenModule {
+
+
+    @Module
+    interface Bindings {
+
+        @Binds
+        fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
+
+        @Binds
+        fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
+    }
+
+
+}
 
 interface TicketsScreenContract {
 
@@ -39,20 +55,3 @@ class TicketsScreen @Inject constructor() :
     }
 }
 
-
-@Module(includes = [TicketScreenModule.Bindings::class])
-class TicketScreenModule {
-
-
-    @Module
-    interface Bindings {
-
-        @Binds
-        fun bindPresenter(impl: TicketsScreenPresenter): TicketsScreenContract.Presenter
-
-        @Binds
-        fun bindScreen(impl: TicketsScreen): TicketsScreenContract.Screen
-    }
-
-
-}

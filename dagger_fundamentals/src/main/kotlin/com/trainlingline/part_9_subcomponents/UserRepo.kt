@@ -13,7 +13,6 @@ interface UserRepoModule {
 
 }
 
-
 interface UserRepo {
     fun getUser(userId: String): User
 }

@@ -1,2 +1,0 @@
-1. Can you find any other ways to achieve the same results? i.e put TrainlingApp
-in the application graph.

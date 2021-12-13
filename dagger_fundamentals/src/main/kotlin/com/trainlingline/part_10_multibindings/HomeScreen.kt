@@ -10,8 +10,6 @@ import javax.inject.Inject
 @Subcomponent(modules = [HomeScreenModule::class])
 interface HomeScreenSubcomponent {
 
-    fun helpers(): Set<Helper>
-
     fun homeScreenPresenter(): HomeScreenContract.Presenter
 
     @Subcomponent.Builder
@@ -30,16 +28,12 @@ interface HomeScreenModule {
     fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
 
     @Binds
-    fun bindNavigator(impl: TrainingLineApp): Navigator
-
-    @Binds
     @IntoSet
     fun bindHomeScreenHelper(impl: HomeScreenHelper): Helper
 
 }
 
-class HomeScreenHelper @Inject constructor() :
-    Helper {
+class HomeScreenHelper @Inject constructor() : Helper {
     override fun help() {
         println("I'm helping on the home screen!!!")
     }
@@ -59,12 +53,13 @@ interface HomeScreenContract {
 class HomeScreenPresenter @Inject constructor(
     private val helpers: Set<@JvmSuppressWildcards Helper>,
     private val userRepo: UserRepo,
-    private val screen: HomeScreenContract.Screen,
-    private val navigator: Navigator
+    private val screen: HomeScreenContract.Screen
 ) : HomeScreenContract.Presenter {
 
     override fun present() {
-       // helpers.forEach { it.help() }
+        println("----- calling helpers on the home screen")
+        helpers.forEach { it.help() }
+        println("----- finished helpers on the home screen \n")
 
         userRepo.getUser("1")
         // Do some stuff
@@ -73,8 +68,7 @@ class HomeScreenPresenter @Inject constructor(
     }
 }
 
-class HomeScreen @Inject constructor() :
-    HomeScreenContract.Screen {
+class HomeScreen @Inject constructor() : HomeScreenContract.Screen {
 
     override fun show() {
 

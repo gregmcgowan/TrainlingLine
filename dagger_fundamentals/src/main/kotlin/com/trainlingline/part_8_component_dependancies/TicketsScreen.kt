@@ -4,6 +4,7 @@ import dagger.Binds
 import dagger.Component
 import dagger.Module
 import javax.inject.Inject
+import javax.inject.Named
 
 @ScreenScope
 @Component(
@@ -34,26 +35,29 @@ interface TicketsScreenContract {
     }
 
     interface Screen {
-        fun show()
+        fun show(userName: String, userId: String)
     }
 }
 
 class TicketsScreenPresenter @Inject constructor(
+    @Named("userName") private val userName: String,
+    @Named("userId") private val userId: String,
     private val ticketsRepo: TicketRepo,
     private val screen: TicketsScreenContract.Screen
 ) : TicketsScreenContract.Presenter {
 
     override fun present() {
-        ticketsRepo.getTicketsForUser("1")
+        ticketsRepo.getTicketsForUser(userId)
         // Do some stuff
-        screen.show()
+        screen.show(userName, userId)
     }
 }
 
 class TicketsScreen @Inject constructor() : TicketsScreenContract.Screen {
 
-    override fun show() {
-        print("Showing tickets")
+    override fun show(userName: String, userId: String) {
+        print("Showing tickets for $userName $userId")
     }
 }
+
 
