@@ -5,6 +5,26 @@ import dagger.Component
 import dagger.Module
 import javax.inject.Inject
 
+fun main() {
+    TrainingLineApp().start()
+}
+
+class TrainingLineApp {
+
+    @Inject
+    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
+
+    fun start() {
+        DaggerAppComponent.create().inject(this)
+        homeScreenPresenter.present()
+    }
+}
+
+@Component(modules = [HomeScreenModule::class])
+interface AppComponent {
+    fun inject(app: TrainingLineApp)
+}
+
 
 interface HomeScreenContract {
 
@@ -16,6 +36,7 @@ interface HomeScreenContract {
         fun show()
     }
 }
+
 
 class HomeScreenPresenter @Inject constructor(
     private val mainScreen: HomeScreenContract.Screen
@@ -35,7 +56,7 @@ class HomeScreen @Inject constructor() : HomeScreenContract.Screen {
 
 
 @Module
-interface HomeScreenModule {
+interface HomeScreenModule {;
 
     @Binds
     fun bindPresenter(impl: HomeScreenPresenter): HomeScreenContract.Presenter
@@ -46,26 +67,7 @@ interface HomeScreenModule {
 }
 
 
-@Component(modules = [HomeScreenModule::class])
-interface AppComponent {
-    fun inject(app: TrainingLineApp)
-}
 
-class TrainingLineApp {
-
-    @Inject
-    lateinit var homeScreenPresenter: HomeScreenContract.Presenter
-
-    fun start() {
-        DaggerAppComponent.create().inject(this)
-        homeScreenPresenter.present()
-    }
-}
-
-
-fun main() {
-    TrainingLineApp().start()
-}
 
 
 

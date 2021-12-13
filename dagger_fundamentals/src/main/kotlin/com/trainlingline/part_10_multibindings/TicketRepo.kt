@@ -1,4 +1,4 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_10_multibindings
 
 import dagger.Binds
 import dagger.Module
@@ -14,27 +14,18 @@ interface TicketRepoModule {
 }
 
 interface TicketRepo {
-
     fun getTicketsForUser(userID: String): List<Ticket>
-
 }
 
 class RemoteTicketRepo @Inject constructor(
     private val okHttpClient: OkHttpClient
 ) : TicketRepo {
 
-    init {
-        println("okHttpClient = $okHttpClient")
-    }
-
     override fun getTicketsForUser(userID: String): List<Ticket> {
-        // non-sense okhttp call so that it is used
-        okHttpClient.cache
         return listOf(Ticket("return"))
     }
 }
 
 
 data class Ticket(val ticketName: String)
-
 

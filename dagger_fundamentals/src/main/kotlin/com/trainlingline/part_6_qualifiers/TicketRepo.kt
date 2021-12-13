@@ -1,9 +1,10 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_6_qualifiers
 
 import dagger.Binds
 import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
+
 
 @Module
 interface TicketRepoModule {
@@ -23,13 +24,8 @@ class RemoteTicketRepo @Inject constructor(
     private val okHttpClient: OkHttpClient
 ) : TicketRepo {
 
-    init {
-        println("okHttpClient = $okHttpClient")
-    }
-
     override fun getTicketsForUser(userID: String): List<Ticket> {
-        // non-sense okhttp call so that it is used
-        okHttpClient.cache
+        // do something with ok http
         return listOf(Ticket("return"))
     }
 }

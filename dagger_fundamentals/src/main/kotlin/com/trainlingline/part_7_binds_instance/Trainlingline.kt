@@ -1,10 +1,12 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_7_binds_instance
 
+import dagger.BindsInstance
 import dagger.Component
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 fun main() {
@@ -20,8 +22,21 @@ class TrainingLineApp {
     lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
 
     fun start() {
-        DaggerAppComponent.create().inject(this)
+        DaggerAppComponent
+            .builder()
+            .userId("1")
+            .userUsername("greg")
+            .build()
+            .inject(this)
+
+
+//        DaggerAppComponent
+//            .factory()
+//            .appComponent("1","GREG")
+//            .inject(this)
+
         showHomeScreen()
+        showTickets()
     }
 
 
@@ -35,20 +50,37 @@ class TrainingLineApp {
     }
 }
 
-
 @Singleton
 @Component(
     modules = [
         NetworkModule::class,
         UserRepoModule::class,
-        TicketRepoModule::class,
         HomeScreenModule::class,
+        TicketRepoModule::class,
         TicketScreenModule::class
     ]
 )
 interface AppComponent {
 
     fun inject(app: TrainingLineApp)
+//
+//    @Component.Factory
+//    interface Factory {
+//
+//        fun appComponent(
+//            @BindsInstance @Named("userId") userId: String,
+//            @BindsInstance @Named("userName") userName: String
+//        ): AppComponent
+//    }
+
+    @Component.Builder
+    interface Builder {
+
+        fun userId(@BindsInstance @Named("userId") userId: String): Builder
+        fun userUsername(@BindsInstance @Named("userName") userName: String): Builder
+        fun build(): AppComponent
+    }
+
 }
 
 @Module
@@ -59,6 +91,8 @@ class NetworkModule {
     fun provideOkHttp() = OkHttpClient()
 
 }
+
+
 
 
 

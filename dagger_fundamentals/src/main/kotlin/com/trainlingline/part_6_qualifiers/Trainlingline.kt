@@ -1,4 +1,4 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_6_qualifiers
 
 import dagger.Component
 import dagger.Module
@@ -20,8 +20,14 @@ class TrainingLineApp {
     lateinit var ticketScreenPresenter: TicketsScreenContract.Presenter
 
     fun start() {
-        DaggerAppComponent.create().inject(this)
+        DaggerAppComponent.builder()
+            .ticketScreenModule(TicketScreenModule("Greg", "1"))
+            .build()
+            .inject(this)
+
         showHomeScreen()
+        // after selecting user
+        showTickets()
     }
 
 
@@ -33,6 +39,15 @@ class TrainingLineApp {
     fun showTickets() {
         ticketScreenPresenter.present()
     }
+}
+
+@Module
+class NetworkModule {
+
+    @Singleton
+    @Provides
+    fun provideOkHttp() = OkHttpClient()
+
 }
 
 
@@ -51,14 +66,6 @@ interface AppComponent {
     fun inject(app: TrainingLineApp)
 }
 
-@Module
-class NetworkModule {
-
-    @Singleton
-    @Provides
-    fun provideOkHttp() = OkHttpClient()
-
-}
 
 
 

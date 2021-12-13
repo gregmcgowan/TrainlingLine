@@ -1,9 +1,17 @@
-package com.trainlingline.part_8_subcomponents
+package com.trainlingline.part_7_binds_instance
 
 import dagger.Binds
 import dagger.Module
 import okhttp3.OkHttpClient
 import javax.inject.Inject
+
+@Module
+interface TicketRepoModule {
+
+    @Binds
+    fun bindRepo(impl: RemoteTicketRepo): TicketRepo
+
+}
 
 interface TicketRepo {
 
@@ -17,7 +25,6 @@ class RemoteTicketRepo @Inject constructor(
 
     override fun getTicketsForUser(userID: String): List<Ticket> {
         // do something with ok http
-
         return listOf(Ticket("return"))
     }
 }
@@ -26,10 +33,3 @@ class RemoteTicketRepo @Inject constructor(
 data class Ticket(val ticketName: String)
 
 
-@Module
-interface TicketRepoModule {
-
-    @Binds
-    fun bindRepo(impl: RemoteTicketRepo): TicketRepo
-
-}

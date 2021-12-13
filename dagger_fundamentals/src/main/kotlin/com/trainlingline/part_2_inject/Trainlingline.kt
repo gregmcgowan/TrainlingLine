@@ -3,12 +3,31 @@ package com.trainlingline.part_2_inject
 import dagger.Component
 import javax.inject.Inject
 
-class HomeScreen @Inject constructor() {
+fun main() {
+    TrainingLineApp().start()
+}
 
-    fun show() {
-        print("Showing main screen!")
+class TrainingLineApp {
+
+    @Inject
+    lateinit var homeScreenPresenter: HomeScreenPresenter
+
+    fun start() {
+        DaggerAppComponent
+            .create()
+            .inject(this)
+
+        homeScreenPresenter.present()
     }
 }
+
+@Component
+interface AppComponent {
+
+    fun inject(app: TrainingLineApp)
+
+}
+
 
 class HomeScreenPresenter @Inject constructor(
     private val homeScreen: HomeScreen
@@ -19,28 +38,15 @@ class HomeScreenPresenter @Inject constructor(
     }
 }
 
+class HomeScreen @Inject constructor() {
 
-@Component
-interface AppComponent {
-
-    fun inject(app: TrainingLineApp)
-
-}
-
-
-class TrainingLineApp {
-
-    @Inject lateinit var homeScreenPresenter: HomeScreenPresenter
-
-    fun start() {
-        DaggerAppComponent.create().inject(this)
-        homeScreenPresenter.present()
+    fun show() {
+        print("Showing main screen!")
     }
 }
 
-fun main() {
-    TrainingLineApp().start()
-}
+
+
 
 
 

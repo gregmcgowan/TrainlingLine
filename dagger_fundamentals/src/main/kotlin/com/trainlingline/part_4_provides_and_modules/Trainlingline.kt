@@ -3,11 +3,8 @@ package com.trainlingline.part_4_provides_and_modules
 import dagger.Component
 import javax.inject.Inject
 
-@Component(modules = [HomeScreenModule::class, UserRepoModule::class, NetworkModule::class])
-interface AppComponent {
-
-    fun inject(app: TrainingLineApp)
-
+fun main() {
+    TrainingLineApp().start()
 }
 
 class TrainingLineApp {
@@ -21,10 +18,23 @@ class TrainingLineApp {
     }
 }
 
+@Component(
+    modules = [
+        HomeScreenModule::class,
+        UserRepoModule::class,
+        NetworkModule::class
+    ]
+)
+interface AppComponent {
 
-fun main() {
-    TrainingLineApp().start()
+    fun inject(app: TrainingLineApp)
+
 }
+
+
+
+
+
 
 
 

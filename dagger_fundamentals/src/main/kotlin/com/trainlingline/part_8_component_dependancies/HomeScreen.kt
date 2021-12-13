@@ -1,8 +1,20 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_8_component_dependancies
 
 import dagger.Binds
+import dagger.Component
 import dagger.Module
 import javax.inject.Inject
+
+@ScreenScope
+@Component(
+    modules = [HomeScreenModule::class, UserRepoModule::class],
+    dependencies = [AppComponent::class, OtherComponent::class]
+)
+interface HomeScreenComponent {
+
+    fun provideHomeScreenPresenter(): HomeScreenContract.Presenter
+}
+
 
 @Module
 interface HomeScreenModule {
@@ -14,6 +26,7 @@ interface HomeScreenModule {
     fun bindScreen(impl: HomeScreen): HomeScreenContract.Screen
 
 }
+
 
 interface HomeScreenContract {
 

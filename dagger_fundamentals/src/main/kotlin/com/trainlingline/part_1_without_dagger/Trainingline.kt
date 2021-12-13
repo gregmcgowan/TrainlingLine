@@ -1,6 +1,22 @@
 package com.trainlingline.part_1_without_dagger
 
 
+fun main() {
+    TrainingLineApp().start()
+}
+
+
+class TrainingLineApp {
+
+    lateinit var presenter: HomeScreenPresenter
+
+    fun start() {
+        presenter = HomeScreenPresenter(HomeScreen())
+        presenter.present()
+    }
+}
+
+
 class HomeScreen {
 
     fun show() {
@@ -15,20 +31,6 @@ class HomeScreenPresenter(private val homeScreen: HomeScreen) {
     }
 }
 
-
-class TrainingLineApp {
-
-    lateinit var presenter: HomeScreenPresenter
-
-    fun start() {
-        presenter = HomeScreenPresenter(HomeScreen())
-        presenter.present()
-    }
-}
-
-fun main() {
-    TrainingLineApp().start()
-}
 
 
 

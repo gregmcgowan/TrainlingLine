@@ -1,4 +1,4 @@
-package com.trainlingline.part_5_simple_use_of_scopes
+package com.trainlingline.part_6_qualifiers
 
 import dagger.Binds
 import dagger.Module
@@ -38,7 +38,8 @@ class HomeScreenPresenter @Inject constructor(
     }
 }
 
-class HomeScreen @Inject constructor() : HomeScreenContract.Screen {
+class HomeScreen @Inject constructor() :
+    HomeScreenContract.Screen {
 
     override fun show() {
         println("Showing main screen")

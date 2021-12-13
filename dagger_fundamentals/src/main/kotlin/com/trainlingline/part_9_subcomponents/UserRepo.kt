@@ -1,8 +1,7 @@
-package com.trainlingline.part_4_provides_and_modules
+package com.trainlingline.part_9_subcomponents
 
 import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import okhttp3.OkHttpClient
 import javax.inject.Inject
 
@@ -14,27 +13,17 @@ interface UserRepoModule {
 
 }
 
-@Module
-class NetworkModule {
-
-    @Provides
-    fun provideOkHttp() = OkHttpClient()
-
-}
-
 interface UserRepo {
     fun getUser(userId: String): User
 }
 
 data class User(val name: String)
 
-
 class RemoteUserRepo @Inject constructor(
     private val okHttpClient: OkHttpClient
 ) : UserRepo {
 
     override fun getUser(userId: String): User {
-        // Pretend we have some okhttp code here
         return User("User")
     }
 }
